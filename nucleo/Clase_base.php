@@ -77,7 +77,7 @@ class Clase_base {
             $es_array = $this->$metodo();
             if (is_array($es_array)) {
                 $valor = str_getcsv($valor, "|");
-            } 
+            }
             $metodo = "set" . $campo;
             if (method_exists($this, $metodo)) {
                 $this->$metodo($valor);
@@ -85,7 +85,30 @@ class Clase_base {
         }
     }
 
-    public function cambiarArrayPorObjetos($campo,array $cosas) {
+    /**
+     * 
+     * @param string $campo
+     * @param string $tabla
+     * @param string $campoTabla
+     * @param mixed $valor
+     */
+    public function cambiarTipoPropiedadPorObjeto($campo, $tabla, $campoTabla, $valor) {
+
+        $bd = new \nucleo\BD();
+        if (is_array($valor)) {
+            $objetos = array();
+            foreach ($valor as $pos => $contenido) {
+                $objeto = $bd->obtenerPorColumnas($tabla, array($campoTabla => $contenido));
+                array_push($objetos, $objeto);
+            }
+        } else {
+            $objetos = $bd->obtenerPorColumnas($tabla, array($campoTabla => $valor));
+        }
+        $metodo = "set" . strtoupper(substr($campo, 0, 1)) . substr($campo, 1);
+        $this->$metodo($objetos);
+    }
+
+    public function cambiarArrayPorObjetos($campo, $tabla, $campoTabla, array $cosas) {
         
     }
 

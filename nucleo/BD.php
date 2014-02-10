@@ -86,7 +86,7 @@ class BD implements InterfazBD {
         return $lista[0];
     }
 
-    public function obtenerPorColumnas($tabla, array $columnas = array()) {
+    public function obtenerPorColumnas($tabla, array $columnas) {
         $campos = "";
         foreach ($columnas as $columna => $valor) {
             if (!is_numeric($valor)) {
