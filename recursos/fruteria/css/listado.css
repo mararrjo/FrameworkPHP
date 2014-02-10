@@ -1,0 +1,24 @@
+
+#tabla_listado {
+    border: solid 1px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#tabla_listado td:hover{
+    cursor: pointer;
+    background-color: #cccccc;
+}
+
+.seccion {
+    position: relative;
+    width: 80%;
+    left: 10%;
+    text-align: center;
+}
+
+.campo_articulos {
+    text-align: left;
+    border-bottom: solid 1px;
+    padding: 5px;
+}
