@@ -88,6 +88,12 @@ class Clase_base {
     }
 
     /**
+     * Transforma los datos de la propiedad del objeto de un tipo simple a un
+     * objeto o array de objetos a los que hace refererencia. 
+     * Un ejemplo para obtener un objeto simple:
+     *  $empleado->cambiarTipoPropiedadPorObjetos("deptartamento","dept","deptno","informatica")
+     * Ejemplo para obtener un array de objetos:
+     *  $empleado->cambiarTipoPropiedadPorObjetos("listaDeptartamentos","dept","deptno",array("informatica","matematicas","tecnologia"))
      * 
      * @param string $campoObjeto Propiedad del objeto
      * @param string $tabla Nombre de la tabla de la que se quieren obtener los datos
