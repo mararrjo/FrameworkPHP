@@ -1,19 +1,25 @@
 
 #cabecera {
-   text-align: center;
+/*   text-align: center;
    background-color: background;
-   box-shadow: 5px 5px 5px #666666;
+   box-shadow: 5px 5px 5px #666666;*/
 }
 
 #cuerpo {
-    
+    padding-bottom: 40px;
 }
 
 #pie {
     
 }
 
-#menu {
-    background-color: #ccccff;
+#div_menu {
+    background-color: #363636;
     padding: 5px;
+}
+
+#flash {
+    background-color: #fac674;
+    border: solid 1px;
+    border-radius: 5px;
 }

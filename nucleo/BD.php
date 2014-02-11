@@ -48,12 +48,12 @@ class BD implements InterfazBD {
         return $filas;
     }
 
-    public function obtenerTodo($tabla, array $clausulas=array()) {
+    public function obtenerTodo($tabla, array $clausulas = array()) {
         $string_clausulas = "";
-        foreach($clausulas as $clausula => $valor){
+        foreach ($clausulas as $clausula => $valor) {
             $string_clausulas .= "$clausula $valor";
         }
-        $query = "select * from " . $tabla." ".$string_clausulas;
+        $query = "select * from " . $tabla . " " . $string_clausulas;
         $filas = $this->select($query);
         $tabla = "\\app\\modelos\\" . $tabla;
 
@@ -86,15 +86,35 @@ class BD implements InterfazBD {
         return $lista[0];
     }
 
-    public function obtenerPorColumnas($tabla, array $columnas) {
+    /**
+     * Obtiene un objeto pasando como parametro un array con la columna
+     * 
+     * @param string $tabla La tabla que sera consultada
+     * @param array $columnas Array con el nombre de la columna y su valor.
+     * @return array Con las filas obtenidas.
+     */
+    public function obtenerPorColumna($tabla, array $columna) {
         $campos = "";
-        foreach ($columnas as $columna => $valor) {
-            if (!is_numeric($valor)) {
-                $campos .= $columna . " = '$valor'";
+        $nombreColumna = key($columna);
+        $valor = $columna[$nombreColumna];
+            if (is_array($valor)) {
+                $lista = array();
+                $this->conectar();
+                foreach ($valor as $v) {
+                    $resultado = $this->conexion->query("select * from " . $tabla . " where $nombreColumna = '$v'");
+                    $obj = $resultado->fetch_object();
+                    $t = "\\app\\modelos\\" . $tabla;
+                    $nuevo = new $t();
+                    $nuevo->guardarDatosDeArray($obj);
+                    array_push($lista, $nuevo);
+                }
+                $this->desconectar();
+                return $lista;
+            } elseif (!is_numeric($valor)) {
+                $campos .= $nombreColumna . " = '$valor'";
             } else {
-                $campos .= $columna . " = " . $valor;
+                $campos .= $nombreColumna . " = " . $valor;
             }
-        }
         $filas = $this->select("select * from " . $tabla . " where $campos;");
         $tabla = "\\app\\modelos\\" . $tabla;
 

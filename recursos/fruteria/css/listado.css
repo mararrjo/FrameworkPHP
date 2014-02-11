@@ -7,7 +7,6 @@
 
 #tabla_listado td:hover{
     cursor: pointer;
-    background-color: #cccccc;
 }
 
 .seccion {

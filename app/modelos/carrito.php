@@ -7,10 +7,6 @@ class carrito extends \nucleo\Clase_base {
     private $usuario;
     private $articulos = array();
     
-//    function __construct() {
-//        $this->articulos = array();
-//    }
-
     public function getId() {
         return $this->id;
     }

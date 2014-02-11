@@ -44,15 +44,16 @@ class Clase_base {
             if (stristr($metodo, "get")) {
                 $valor = $this->$metodo();
                 if (is_array($valor)) {
-                    $valores = "";
-                    foreach ($valor as $indice => $v) {
-                        if ($indice < count($valor) - 1) {
-                            $valores .= $v . "|";
-                        } else {
-                            $valores .= $v;
-                        }
-                    }
-                    $valor = $valores;
+//                    $valores = "";
+//                    foreach ($valor as $indice => $v) {
+//                        if ($indice < count($valor) - 1) {
+//                            $valores .= $v . "|";
+//                        } else {
+//                            $valores .= $v;
+//                        }
+//                    }
+//                    $valor = $valores;
+                    $valor = serialize($valor);
                 }
                 if (!is_numeric($valor)) {
                     $valor = "'$valor'";
@@ -75,8 +76,9 @@ class Clase_base {
             $campo = strtoupper(substr($campo, 0, 1)) . substr($campo, 1);
             $metodo = "get" . $campo;
             $es_array = $this->$metodo();
-            if (is_array($es_array)) {
-                $valor = str_getcsv($valor, "|");
+            if (is_array($es_array) and !is_array($valor)) {
+//                $valor = str_getcsv($valor, "|");
+                $valor = unserialize($valor);
             }
             $metodo = "set" . $campo;
             if (method_exists($this, $metodo)) {
@@ -87,29 +89,17 @@ class Clase_base {
 
     /**
      * 
-     * @param string $campo
-     * @param string $tabla
-     * @param string $campoTabla
-     * @param mixed $valor
+     * @param string $campoObjeto Propiedad del objeto
+     * @param string $tabla Nombre de la tabla de la que se quieren obtener los datos
+     * @param string $campoTabla Propiedad de la tabla de la que se quiere obtener los datos
+     * @param mixed $datos Valor o valores que se pasan para obtener los datos de la tabla
      */
-    public function cambiarTipoPropiedadPorObjeto($campo, $tabla, $campoTabla, $valor) {
+    public function cambiarTipoPropiedadPorObjetos($campoObjeto, $tabla, $campoTabla, $datos) {
 
         $bd = new \nucleo\BD();
-        if (is_array($valor)) {
-            $objetos = array();
-            foreach ($valor as $pos => $contenido) {
-                $objeto = $bd->obtenerPorColumnas($tabla, array($campoTabla => $contenido));
-                array_push($objetos, $objeto);
-            }
-        } else {
-            $objetos = $bd->obtenerPorColumnas($tabla, array($campoTabla => $valor));
-        }
-        $metodo = "set" . strtoupper(substr($campo, 0, 1)) . substr($campo, 1);
+        $objetos = $bd->obtenerPorColumna($tabla, array($campoTabla => $datos));
+        $metodo = "set" . strtoupper(substr($campoObjeto, 0, 1)) . substr($campoObjeto, 1);
         $this->$metodo($objetos);
-    }
-
-    public function cambiarArrayPorObjetos($campo, $tabla, $campoTabla, array $cosas) {
-        
     }
 
 }

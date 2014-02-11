@@ -5,9 +5,16 @@ use nucleo\Controlador;
 use app\modelos\form_carrito;
 class carrito extends Controlador {
     
-    public function verCarrito(){
+    public function listaCarritos(){
         $carritos = $this->obtenerTodo("carrito");
         $this->renderizar(array("carritos"=>$carritos));
+    }
+    
+    public function verCarrito($request, $id){
+        $carrito = new \app\modelos\carrito();
+        $carrito = $this->obtenerPorId("carrito",$id);
+        $carrito->cambiarTipoPropiedadPorObjetos("articulos", "articulos", "nombre", $carrito->getArticulos());
+        $this->renderizar(array("carrito"=>$carrito));
     }
     
     public function anadirCarrito(){
@@ -24,7 +31,7 @@ class carrito extends Controlador {
 //        var_dump($carrito);
 //        echo $carrito->obtenerStringCampos();
         $this->insert($carrito);
-        $this->redireccionar("carrito", "verCarrito");
+        $this->redireccionar("carrito", "listaCarritos");
 //        $this->renderizarPlantilla("plantilla","carrito","anadirCarrito",array("form"=>$formulario->renderizarFormulario()));
     }
     

@@ -16,9 +16,9 @@ class Widgets {
             foreach ($parametros as $parametro => $valor) {
                 $string_parametros .= $parametro . "='" . $valor . "' ";
             }
-            return $label . ": <input " . $string_parametros . " name='$campo' id='$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'><br>";
+            return $label . ": <input " . $string_parametros . " name='$campo' id='$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'>";
         } else {
-            return $campo . ": <input type='$tipo' name='$campo' id='$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'><br>";
+            return $campo . ": <input type='$tipo' name='$campo' id='$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'>";
         }
     }
 
@@ -34,9 +34,9 @@ class Widgets {
             foreach ($parametros as $parametro => $valor) {
                 $string_parametros .= $parametro . "='" . $valor . "' ";
             }
-            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $label . "'><br>";
+            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $label . "' $string_parametros>";
         } else {
-            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'><br>";
+            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'>";
         }
     }
 
@@ -106,7 +106,7 @@ class Widgets {
         } else {
             $label = $campo;
         }
-        $multiple = isset($parametros["multiple"]) ? ($parametros["multiple"] ? "multiple" : "") : "";
+        $multiple = isset($parametros["multiple"]) ? ($parametros["multiple"] ? $campo.="[]" : "") : "";
         $input = "";
         $input .= $label . ":<br>";
         foreach ($parametros["opciones"] as $opcion) {
