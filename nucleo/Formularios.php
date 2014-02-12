@@ -5,19 +5,52 @@ namespace nucleo;
 class Formularios {
 
     /**
-     *
+     * Almacena un array con la forma array("id"=>"tipo")
+     *  o array("id"=>array(
+     *              "type"=>"text", 
+     *              "multiple"=>true,
+     *              "expandido"=>true, 
+     *              "opciones"=>array("opcion1","opcion2",...) o "nombre_tabla"))
+     * 
      * @var array $campos Contiene los campos que se mostraran en el formulario
      * con su tipo y parametros.
      */
-    protected $campos = array();
+    private $campos = array();
 
     /**
+     * Almacena un array con la forma array("campo1"=>"validacion", "campo2"=>"validacion",...
      *
+     * @var array Contiene los campos del formulario con su validacion.
+     */
+    private $validaciones = array();
+
+    /**
+     * Contiene los campos con los errores obtenidos al validar
+     * array("campo1"=>"error","campo2"=>"error")
+     * 
+     * @var array
+     */
+    private $errores = array();
+    
+    /**
+     * Es un array de la forma array("campo1"=>"valor1","campo2"=>"valor2",...)
+     * 
      * @var array $datos Contiene los datos de los campos del formulario con 
      * sus valores 
      */
-    protected $datos = array();
-    protected $nombre_clase;
+    private $datos = array();
+
+    /**
+     *
+     * @var String
+     */
+    private $nombre_clase;
+
+    /**
+     *
+     * @var boolean
+     */
+    private $valido;
 
     public function __construct($objeto = null) {
 
@@ -30,6 +63,7 @@ class Formularios {
 
     /**
      * Metodo que sirve para configurar los campos que van a tener los formularios.
+     * Se usa para llamar a los metodos setCampos y setValidaciones.
      * 
      */
     public function configuracion() {
@@ -38,6 +72,10 @@ class Formularios {
 
     public function setCampos(array $campos) {
         $this->campos = $campos;
+    }
+
+    public function setValidaciones(array $validaciones) {
+        $this->validaciones = $validaciones;
     }
 
     public function obtenerCampos() {
@@ -61,8 +99,23 @@ class Formularios {
         $this->datos = $arrayDatos;
 
         //Hacer validacion aqui
-
+        if (count($this->validaciones) > 0) {
+            $resultado = \nucleo\Validaciones::validar($this->validaciones, $this->datos);
+            if ($resultado === true) {
+                $this->valido = true;
+            } else {
+                $this->errores = $resultado;
+                $this->valido = false;
+            }
+        } else {
+            $this->valido = true;
+        }
+        
         $clase->guardarDatosDeArray($this->datos);
+    }
+
+    public function esValido() {
+        return $this->valido;
     }
 
     public function renderizarFormulario($action = "") {
@@ -70,10 +123,13 @@ class Formularios {
         if ($action) {
             $accion = $action;
         } else {
-            $accion = \nucleo\URL::ruta(array(\nucleo\Distribuidor::getControlador(), \nucleo\Distribuidor::getMetodo() . "_validar", $id));
+            if (!preg_match("/validar/i", \nucleo\Distribuidor::getMetodo()))
+                $accion = \nucleo\URL::ruta(array(\nucleo\Distribuidor::getControlador(), \nucleo\Distribuidor::getMetodo() . "_validar", $id));
+            else
+                $accion = \nucleo\URL::ruta(array(\nucleo\Distribuidor::getControlador(), \nucleo\Distribuidor::getMetodo(), $id));
         }
         $form = "<form action='" . $accion . "'  class='formulario' name='form_" . $this->nombre_clase . "_" . \nucleo\Distribuidor::getMetodo() . "' method='post'>";
-        
+
         if (isset($this->datos["id"])) {
             $form .= \nucleo\Widgets::hidden("id", $id);
         }
@@ -86,6 +142,9 @@ class Formularios {
             } else {
                 $tipo = $parametros["type"];
                 $form .= \nucleo\Widgets::$tipo($campo, $value, $parametros);
+            }
+            if(count($this->errores) > 0 and isset($this->errores[$campo])){
+                $form .= "<span class='error_$this->nombre_clase' id='error_$campo'>{$this->errores[$campo]}</span>";
             }
             $form .= "</div>";
         }

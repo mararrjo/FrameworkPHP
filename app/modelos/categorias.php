@@ -3,8 +3,8 @@ namespace app\modelos;
 
 class categorias extends \nucleo\Clase_base {
     
-    private $id;
-    private $nombre;
+    private $id=0;
+    private $nombre="";
     
     public function getId() {
         return $this->id;

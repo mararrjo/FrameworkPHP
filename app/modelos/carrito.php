@@ -43,4 +43,9 @@ class carrito extends \nucleo\Clase_base {
         return $this->usuario;
     }
     
+    public function obtenerPorId($id, $nombreTabla = "") {
+        parent::obtenerPorId($id, $nombreTabla);
+        $this->cambiarTipoPropiedadPorObjetos("articulos", "articulos", "nombre", $this->getArticulos());
+    }
+    
 }

@@ -8,9 +8,8 @@ class form_articulos extends Formularios {
 
     public function configuracion() {
         $this->setCampos(array(
-            "Nombre" => array("type" => "text", "maxLength" => 20, "required" => "required"),
-//            "Categoria" => array("type" => "text", "label" => "Nombre de la Categoria"),
-            "Categoria" => array("type" =>"seleccion", 
+            "nombre" => array("type" => "text", "maxLength" => 20),
+            "categoria" => array("type" =>"seleccion", 
                 "label"=>"Elige categoria", 
                 "expandido"=>false,
                 "multiple"=>false,
@@ -18,9 +17,15 @@ class form_articulos extends Formularios {
                 "opciones" => "categorias"),
             "Precio" => "text",
             "Cantidad" => "number",
-            "Aceptar" => "submit",
-            "Vaciar" => array("type" => "button", "label" => "Vaciar campos")
+            "Aceptar" => array("type"=>"submit","class"=>"boton"),
+            "Vaciar" => array("type" => "reset", "label" => "Vaciar campos", "class"=>"boton")
         ));
+        
+        $this->setValidaciones(array(
+            "nombre" => "requerido",
+            "Precio" => "decimal",
+            "Cantidad"=>"entero_positivo"));
+        
     }
 
 }

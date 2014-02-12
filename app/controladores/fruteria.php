@@ -8,17 +8,17 @@ use app\modelos\form_articulos;
 class fruteria extends Controlador {
 
     public function listado() {
-        $articulos = $this->obtenerTodo("articulos", array("order by" => "nombre"));
-        $categorias = $this->obtenerTodo("categorias");
-        $this->renderizar(array("articulos" => $articulos, "categorias" => $categorias));
+        $articulos = new \app\modelos\articulos();
+        $listaArticulos = $articulos->obtenerTodo(array("order by" => "nombre"));
+        $categorias = new \app\modelos\categorias();
+        $listaCategorias = $categorias->obtenerTodo();
+        $this->renderizar(array("articulos" => $listaArticulos, "categorias" => $listaCategorias));
     }
 
     public function mostrar($request, $id = 0) {
         $articulo = new \app\modelos\articulos();
-        $articulo = $this->obtenerPorId("articulos", $id);
-        $articulo->cambiarTipoPropiedadPorObjetos("categoria", "categorias", "nombre", $articulo->getCategoria());
-//        $this->renderizar(array("articulo" => $articulo));
-        $this->renderizarPlantilla("plantilla", "fruteria", "mostrar", array("articulo" => $articulo));
+        $articulo->obtenerPorId($id);
+        $this->renderizar(array("articulo" => $articulo));
     }
 
     public function ver($request, $id = 0) {
@@ -34,7 +34,8 @@ class fruteria extends Controlador {
         $articulo = new \app\modelos\articulos();
         $formulario = new form_articulos($articulo);
         $formulario->procesarFormulario($request, $articulo);
-        if ($this->insert($articulo)) {
+        if ($formulario->esValido()) {
+            $articulo->persistir();
             \nucleo\Sesion::setFlash("Se ha añadido el articulo " . $articulo->getNombre());
             $this->redireccionar("fruteria", "listado");
         } else {
@@ -43,9 +44,9 @@ class fruteria extends Controlador {
     }
 
     public function modificar($request, $id = 0) {
-        $articulo = $this->obtenerPorId("articulos", $id);
+        $articulo = new \app\modelos\articulos();
+        $articulo->obtenerPorId($id);
         $form = new form_articulos($articulo);
-//        var_dump($form);
         $this->renderizar(array("form" => $form->renderizarFormulario()));
     }
 
@@ -53,7 +54,8 @@ class fruteria extends Controlador {
         $articulo = new \app\modelos\articulos();
         $formulario = new form_articulos($articulo);
         $formulario->procesarFormulario($request, $articulo);
-        if ($this->update($articulo)) {
+        if ($formulario->esValido()) {
+            $articulo->persistir();
             \nucleo\Sesion::setFlash("Se ha modificado el articulo " . $articulo->getNombre());
             $this->redireccionar("fruteria", "listado");
         } else {
@@ -63,20 +65,16 @@ class fruteria extends Controlador {
 
     public function eliminar($request, $id = 0) {
         $articulo = new \app\modelos\articulos();
-        $articulo = $this->obtenerPorId("articulos", $id);
+        $articulo->obtenerPorId($id);
         $this->renderizar(array("articulo" => $articulo));
-//        $form = new form_articulos($articulo);
-//        $this->renderizar(array("form"=>$form->renderizarFormulario()));
     }
 
     public function eliminar_validar($request) {
         if (isset($request["id"])) {
             $id = $request["id"];
-            $articulo = $this->obtenerPorId("articulos", $id);
-//        $articulo = new \app\modelos\articulos();
-//        $formulario = new form_articulos($articulo);
-//        $formulario->procesarFormulario($request, $articulo);
-            $this->delete($articulo);
+            $articulo = new \app\modelos\articulos();
+            $articulo->obtenerPorId($id);
+            $articulo->delete();
             \nucleo\Sesion::setFlash("Se ha eliminado el articulo " . $articulo->getNombre());
             $this->redireccionar("fruteria", "listado");
         } else {
@@ -93,8 +91,10 @@ class fruteria extends Controlador {
         $categoria = new \app\modelos\categorias();
         $form = new \app\modelos\form_categorias($categoria);
         $form->procesarFormulario($request, $categoria);
-        $this->insert($categoria);
-        \nucleo\Sesion::setFlash("Se ha añadido la categoria " . $categoria->getNombre());
+        if ($form->esValido()) {
+            $categoria->persistir();
+            \nucleo\Sesion::setFlash("Se ha añadido la categoria " . $categoria->getNombre());
+        }
         $this->redireccionar("fruteria", "listado");
     }
 

@@ -11,14 +11,23 @@ class Widgets {
                 unset($parametros["label"]);
             } else {
                 $label = $campo;
+//                $campo = strtolower($campo);
+            }
+            if(isset($parametros["class"])){
+                $clase = $parametros["class"];
+                unset($parametros["class"]);
+            }else{
+                $clase = "";
             }
             $string_parametros = "";
             foreach ($parametros as $parametro => $valor) {
                 $string_parametros .= $parametro . "='" . $valor . "' ";
             }
-            return $label . ": <input " . $string_parametros . " name='$campo' id='$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'>";
+            return $label . ": <input " . $string_parametros . " name='$campo' id='$campo' class='input_" . $campo . " $clase' value='" . $value . "'>";
         } else {
-            return $campo . ": <input type='$tipo' name='$campo' id='$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'>";
+            $label = $campo;
+//            $campo = strtolower($campo);
+            return $label . ": <input type='$tipo' name='$campo' id='$campo' class='input_" . $campo . "' value='" . $value . "'>";
         }
     }
 
@@ -29,14 +38,22 @@ class Widgets {
                 unset($parametros["label"]);
             } else {
                 $label = $campo;
+//                $campo = strtolower($campo);
+            }
+            if(isset($parametros["class"])){
+                $clase = $parametros["class"];
+                unset($parametros["class"]);
+            }else{
+                $clase = "";
             }
             $string_parametros = "";
             foreach ($parametros as $parametro => $valor) {
                 $string_parametros .= $parametro . "='" . $valor . "' ";
             }
-            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $label . "' $string_parametros>";
+            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . $campo . " $clase' value='" . $label . "' $string_parametros>";
         } else {
-            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . \nucleo\Distribuidor::getControlador() . "' value='" . $value . "'>";
+//            $campo = strtolower($campo);
+            return "<input type='$tipo' name='b_$campo' id='b_$campo' class='input_" . $campo . "' value='" . $value . "'>";
         }
     }
 
@@ -59,25 +76,31 @@ class Widgets {
     public static function submit($campo, $value = "", array $parametros = NULL) {
         return self::crearBoton("submit", $campo, $campo, $parametros);
     }
+    
+    public static function reset($campo, $value = "", array $parametros = NULL){
+        return self::crearBoton("reset", $campo, $campo, $parametros);
+    }
 
-    public static function seleccion($campo, $value = "", array $parametros = null){
-        if(!is_array($parametros["opciones"])){
+    public static function seleccion($campo, $value = "", array $parametros = null) {
+        if (!is_array($parametros["opciones"])) {
             $opciones = array();
-            $bd = new \nucleo\BD();
-            $objetos = $bd->obtenerTodo($parametros["opciones"]);
-            foreach($objetos as $objeto){
+//            $bd = new \nucleo\BD();
+            $clase = "\\app\\modelos\\".$parametros["opciones"];
+            $objeto = new $clase();
+            $objetos = $objeto->obtenerTodo();
+            foreach ($objetos as $objeto) {
                 array_push($opciones, $objeto);
             }
             $parametros["opciones"] = $opciones;
         }
         $expandido = isset($parametros["expandido"]) ? ($parametros["expandido"] ? "expandido" : "") : "";
-        if($expandido){
+        if ($expandido) {
             return self::radio($campo, $value, $parametros);
-        }else{
+        } else {
             return self::select($campo, $value, $parametros);
         }
     }
-    
+
     public static function select($campo, $value = "", array $parametros = null) {
         if (isset($parametros["label"])) {
             $label = $parametros["label"];
@@ -85,15 +108,27 @@ class Widgets {
         } else {
             $label = $campo;
         }
+        if(isset($parametros["class"])){
+                $clase = $parametros["class"];
+                unset($parametros["class"]);
+            }else{
+                $clase = "";
+            }
+//        $campo = strtolower($campo);
         $input = "";
         $input .= $label . ":<br>";
-        $input .= isset($parametros["multiple"]) ? 
-                ($parametros["multiple"] ? "<select name='".$campo."[]' multiple>" : "<select name='$campo'>") : "<select name='$campo'>";
+        $input .= isset($parametros["multiple"]) ?
+                ($parametros["multiple"] ? "<select class='input_$campo $clase' id='$campo' name='" . $campo . "[]' multiple>" : "<select class='input_$campo $clase' id='$campo' name='$campo'>") : "<select name='$campo'>";
         foreach ($parametros["opciones"] as $opcion) {
-            if (strtolower($value) == strtolower($opcion))
-                $input .= "<option value='$opcion' selected>$opcion</option>";
-            else
-                $input .= "<option value='$opcion'>$opcion</option>";
+            $selected = "";
+            if (is_array($value)) {
+                if (in_array($opcion, $value))
+                    $selected = "selected";
+            }else {
+                if (strtolower($value) == strtolower($opcion))
+                    $selected = "selected";
+            }
+            $input .= "<option value='$opcion' $selected>$opcion</option>";
         }
         $input .= "</select>";
         return $input;
@@ -106,21 +141,29 @@ class Widgets {
         } else {
             $label = $campo;
         }
+        if(isset($parametros["class"])){
+                $clase = $parametros["class"];
+                unset($parametros["class"]);
+            }else{
+                $clase = "";
+            }
+//        $campo = strtolower($campo);
         $multiple = isset($parametros["multiple"]) ? ($parametros["multiple"] ? $campo.="[]" : "") : "";
         $input = "";
         $input .= $label . ":<br>";
         foreach ($parametros["opciones"] as $opcion) {
-            if (!$multiple) {
+            $checked = "";
+            if (is_array($value)) {
+                if (in_array($opcion, $value))
+                    $checked = "checked";
+            }else {
                 if (strtolower($value) == strtolower($opcion))
-                    $input .= "<input type='radio' name='$campo' value='$opcion' checked>$opcion";
-                else
-                    $input .= "<input type='radio' name='$campo' value='$opcion'>$opcion";
-            } else {
-                if (strtolower($value) == strtolower($opcion))
-                    $input .= "<input type='checkbox' name='$campo' value='$opcion' checked>$opcion";
-                else
-                    $input .= "<input type='checkbox' name='$campo' value='$opcion'>$opcion";
+                    $checked = "checked";
             }
+            if (!$multiple)
+                $input .= "<input type='radio' name='$campo' id='$campo' class='input_$campo $clase' value='$opcion' $checked>$opcion";
+            else
+                $input .= "<input type='checkbox' name='$campo' id='$campo' class='input_$campo $clase' value='$opcion' $checked>$opcion";
         }
         return $input;
     }

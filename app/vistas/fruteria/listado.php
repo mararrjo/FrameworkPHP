@@ -2,7 +2,7 @@
     <h3>Articulos:</h3>
     <table id="tabla_listado">
         <thead>
-            <tr>
+            <tr class="ui-widget-header">
                 <th>Id</th>
                 <th>Nombre</th>
                 <th>Categoria</th>
@@ -36,7 +36,7 @@
     <h3>Categorias:</h3>
     <table id="tabla_listado">
         <thead>
-            <tr>
+            <tr class="ui-widget-header">
                 <th>Id</th>
                 <th>Nombre</th>
             </tr>

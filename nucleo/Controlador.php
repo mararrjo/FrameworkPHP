@@ -2,15 +2,13 @@
 
 namespace nucleo;
 
-use nucleo\BD;
-
-class Controlador extends BD {
+class Controlador {
 
     protected $form;
     
-    public function __construct() {
-        parent::__construct();
-    }
+//    public function __construct() {
+//        parent::__construct();
+//    }
 
     /**
      * Genera el documento html con todos los datos ya preparados.

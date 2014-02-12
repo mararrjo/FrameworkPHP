@@ -6,14 +6,14 @@ use app\modelos\form_carrito;
 class carrito extends Controlador {
     
     public function listaCarritos(){
-        $carritos = $this->obtenerTodo("carrito");
+        $carrito = new \app\modelos\carrito();
+        $carritos = $carrito->obtenerTodo();
         $this->renderizar(array("carritos"=>$carritos));
     }
     
     public function verCarrito($request, $id){
         $carrito = new \app\modelos\carrito();
-        $carrito = $this->obtenerPorId("carrito",$id);
-        $carrito->cambiarTipoPropiedadPorObjetos("articulos", "articulos", "nombre", $carrito->getArticulos());
+        $carrito->obtenerPorId($id);
         $this->renderizar(array("carrito"=>$carrito));
     }
     
@@ -26,13 +26,31 @@ class carrito extends Controlador {
         $carrito = new \app\modelos\carrito();
         $formulario = new form_carrito($carrito);
         $formulario->procesarFormulario($request, $carrito);
-//        print_r($_POST);
-//        var_dump($formulario);
-//        var_dump($carrito);
-//        echo $carrito->obtenerStringCampos();
-        $this->insert($carrito);
+        if($formulario->esValido()){
+        $carrito->persistir();
         $this->redireccionar("carrito", "listaCarritos");
-//        $this->renderizarPlantilla("plantilla","carrito","anadirCarrito",array("form"=>$formulario->renderizarFormulario()));
+        }else{
+            $this->renderizarPlantilla("plantilla", "carrito", "anadirCarrito",array("form"=>$formulario->renderizarFormulario()));
+        }
+    }
+    
+    public function modificarCarrito($request, $id){
+        $carrito = new \app\modelos\carrito();
+        $carrito->obtenerPorId($id);
+        $formulario = new form_carrito($carrito);
+        $this->renderizar(array("form"=>$formulario->renderizarFormulario()));
+    }
+    
+    public function modificarCarrito_validar($request){
+        $carrito = new \app\modelos\carrito();
+        $formulario = new form_carrito();
+        $formulario->procesarFormulario($request, $carrito);
+        if($formulario->esValido()){
+        $carrito->persistir();
+        $this->redireccionar("carrito", "listaCarritos");
+        }else{
+            $this->renderizarPlantilla("plantilla", "carrito", "modificarCarrito", array("form"=>$formulario->renderizarFormulario()));
+        }
     }
     
 }

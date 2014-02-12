@@ -2,7 +2,7 @@
 
 namespace nucleo;
 
-class Clase_base {
+class Clase_base extends \nucleo\BD {
 
     /**
      * Devuelve un array con las propiedades del objeto y sus valores, que tengan
@@ -44,15 +44,6 @@ class Clase_base {
             if (stristr($metodo, "get")) {
                 $valor = $this->$metodo();
                 if (is_array($valor)) {
-//                    $valores = "";
-//                    foreach ($valor as $indice => $v) {
-//                        if ($indice < count($valor) - 1) {
-//                            $valores .= $v . "|";
-//                        } else {
-//                            $valores .= $v;
-//                        }
-//                    }
-//                    $valor = $valores;
                     $valor = serialize($valor);
                 }
                 if (!is_numeric($valor)) {
@@ -77,7 +68,6 @@ class Clase_base {
             $metodo = "get" . $campo;
             $es_array = $this->$metodo();
             if (is_array($es_array) and !is_array($valor)) {
-//                $valor = str_getcsv($valor, "|");
                 $valor = unserialize($valor);
             }
             $metodo = "set" . $campo;

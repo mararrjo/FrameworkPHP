@@ -15,6 +15,8 @@ class form_carrito extends \nucleo\Formularios {
             "Aceptar"=>"submit"
         ));
         
+//        $this->setValidaciones(array());
+        
     }
     
 }

@@ -61,4 +61,9 @@ class articulos extends \nucleo\Clase_base {
         return $this->nombre;
     }
     
+    public function obtenerPorId($id, $nombreTabla = "") {
+        parent::obtenerPorId($id, $nombreTabla);
+        $this->cambiarTipoPropiedadPorObjetos("categoria", "categorias", "nombre", $this->getCategoria());
+    }
+    
 }
