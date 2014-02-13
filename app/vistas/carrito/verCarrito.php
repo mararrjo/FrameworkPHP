@@ -10,6 +10,7 @@
                 <td>Categoria</td>
                 <td>Precio</td>
                 <td>Cantidad</td>
+                <td>Opcion</td>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,11 @@
                     <td><?php echo $articulo->getCategoria(); ?></td>
                     <td><?php echo $articulo->getPrecio(); ?></td>
                     <td><?php echo $articulo->getCantidad(); ?></td>
+                    <td>
+                        <a href="<?php echo \nucleo\URL::ruta(array("carrito","quitarArticulo",$carrito->getId(),$articulo->getId())) ?>">
+                            <button class="boton">Quitar</button>
+                        </a>
+                    </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>

@@ -109,7 +109,8 @@ class BD implements InterfazBD {
                 $t = "\\app\\modelos\\" . $tabla;
                 $nuevo = new $t();
                 $nuevo->guardarDatosDeArray($obj);
-                array_push($lista, $nuevo);
+                $lista[$nuevo->getId()] = $nuevo;
+//                array_push($lista,$nuevo);
             }
             $this->desconectar($conexion);
             return $lista;
@@ -179,8 +180,10 @@ class BD implements InterfazBD {
         $obj = clone $this;
         $cosas = $this->obtenerPorId($this->getId());
         if($cosas){
+            echo "2";
             return $obj->update();
         }else{
+            echo "3";
             return $obj->insert();
         }
     }

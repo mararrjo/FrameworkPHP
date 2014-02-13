@@ -33,7 +33,12 @@ class Distribuidor {
 
         if (isset($_GET["id"])) {
             $id = $_GET["id"];
-            $modulo->$metodo($_POST,$id);
+            if (isset($_GET["id2"])) {
+                $id2 = $_GET["id2"];
+                $modulo->$metodo($_POST, $id, $id2);
+            } else {
+                $modulo->$metodo($_POST, $id);
+            }
         } else {
             $modulo->$metodo($_POST);
         }

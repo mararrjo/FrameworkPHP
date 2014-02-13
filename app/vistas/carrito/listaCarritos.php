@@ -6,12 +6,13 @@
                 <th>Id</th>
                 <th>Usuario</th>
                 <th>Articulos</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($carritos as $carrito): ?>
                 <tr>
-                    <td><?php echo $carrito->getId(); ?></a></td>
+                    <td><?php echo $carrito->getId(); ?></td>
                     <td><?php echo $carrito->getUsuario(); ?></td>
                     <td><?php echo $carrito->obtenerArticulosString(); ?></td>
                     <td><a href="<?php echo nucleo\URL::ruta(array("carrito", "verCarrito", $carrito->getId())) ?>"><button class="boton">Ver</button></a>
@@ -21,7 +22,7 @@
                 </tr>
             <?php endforeach; ?>
             <tr>
-                <td colspan="6">
+                <td colspan="4">
                     <a href="<?php echo nucleo\URL::ruta(array("carrito", "anadirCarrito")); ?>"><button class="boton">Añadir</button></a>
                 </td>
             </tr>

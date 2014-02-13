@@ -53,4 +53,15 @@ class carrito extends Controlador {
         }
     }
     
+    public function quitarArticulo($request, $idCarrito, $idArticulo=0){
+        $carrito = new \app\modelos\carrito();
+        $carrito->obtenerPorId($idCarrito);
+        $articulos = $carrito->getArticulos();
+        unset($articulos[$idArticulo]);
+        $carrito->setArticulos($articulos);
+        var_dump($carrito);
+        $carrito->persistir();
+//        $this->redireccionar("carrito", "verCarrito", array("id"=>$carrito->getId()));
+    }
+    
 }

@@ -9,10 +9,11 @@ class URL {
         $ruta = "";
 
         foreach ($parametros as $index => $parametro) {
-            if ($index < count($parametros) - 1)
+            if ($index < count($parametros) - 1){
                 $ruta .= $parametro . "/";
-            else
+            }else{
                 $ruta .= $parametro;
+            }
         }
         return URL . $ruta;
     }
