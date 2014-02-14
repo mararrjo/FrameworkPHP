@@ -9,6 +9,10 @@ class articulos extends \nucleo\Clase_base {
     private $precio;
     private $cantidad;
     
+    public function __get($name) {
+        return gettype($name);
+    }
+    
     function __construct($id=0, $nombre="", $categoria="", $precio=0, $cantidad=0) {
         $this->id = $id;
         $this->nombre = $nombre;

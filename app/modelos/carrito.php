@@ -3,7 +3,7 @@ namespace app\modelos;
 
 class carrito extends \nucleo\Clase_base {
     
-    private $id;
+    private $id = 0;
     private $usuario;
     private $articulos = array();
     
@@ -44,8 +44,9 @@ class carrito extends \nucleo\Clase_base {
     }
     
     public function obtenerPorId($id, $nombreTabla = "") {
-        parent::obtenerPorId($id, $nombreTabla);
+        $existe = parent::obtenerPorId($id, $nombreTabla);
         $this->cambiarTipoPropiedadPorObjetos("articulos", "articulos", "nombre", $this->getArticulos());
+        return $existe;
     }
     
 }

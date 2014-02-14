@@ -26,7 +26,7 @@ class BD implements InterfazBD {
         if ($c = $this->conectar()) {
             $namespace_tabla = get_class($this);
             $t = str_getcsv($namespace_tabla, "\\");
-            $tabla = $t[count($t)-1];
+            $tabla = $t[count($t) - 1];
             if ($query == null) {
                 $query = "select * from " . $tabla;
             }
@@ -77,12 +77,9 @@ class BD implements InterfazBD {
             $tabla = $nombreTabla;
         }
         $filas = $this->select("select * from " . $tabla . " where id=" . $id);
-        $tabla = "\\app\\modelos\\" . $tabla;
-        $lista = array();
         foreach ($filas as $fila) {
             $this->guardarDatosDeArray($fila);
         }
-        
         if (count($filas) > 0)
             return true;
         else
@@ -176,15 +173,18 @@ class BD implements InterfazBD {
         return $this->consulta($query);
     }
 
+    public function existe() {
+        $namespace_tabla = get_class($this);
+        $tabla = str_getcsv($namespace_tabla, "\\")[2];
+        $filas = $this->select("select id from $tabla where id = ".$this->getId());
+        return count($filas) ? true : false;
+    }
+
     public function persistir() {
-        $obj = clone $this;
-        $cosas = $this->obtenerPorId($this->getId());
-        if($cosas){
-            echo "2";
-            return $obj->update();
-        }else{
-            echo "3";
-            return $obj->insert();
+        if ($this->existe()) {
+            return $this->update();
+        } else {
+            return $this->insert();
         }
     }
 
