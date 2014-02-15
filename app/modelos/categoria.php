@@ -1,7 +1,7 @@
 <?php
 namespace app\modelos;
 
-class categorias extends \nucleo\Clase_base {
+class categoria extends \nucleo\Clase_base {
     
     private $id=0;
     private $nombre="";

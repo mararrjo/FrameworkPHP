@@ -89,7 +89,13 @@ class Widgets {
             $objeto = new $clase();
             $objetos = $objeto->obtenerTodo();
             foreach ($objetos as $objeto) {
-                array_push($opciones, $objeto);
+                $opciones[$objeto->getId()] = $objeto;
+            }
+            $parametros["opciones"] = $opciones;
+        }else{
+            $opciones = array();
+            foreach ($parametros["opciones"] as $opcion) {
+                $opciones[$opcion] = $opcion;
             }
             $parametros["opciones"] = $opciones;
         }
@@ -119,16 +125,17 @@ class Widgets {
         $input .= $label . ":<br>";
         $input .= isset($parametros["multiple"]) ?
                 ($parametros["multiple"] ? "<select class='input_$campo $clase' id='$campo' name='" . $campo . "[]' multiple>" : "<select class='input_$campo $clase' id='$campo' name='$campo'>") : "<select name='$campo'>";
-        foreach ($parametros["opciones"] as $opcion) {
+        foreach ($parametros["opciones"] as $id => $opcion) {
             $selected = "";
-            if (is_array($value)) {
-                if (in_array($opcion, $value))
+            if (is_array($value)){
+                if (in_array($id, $value)){
                     $selected = "selected";
+                }
             }else {
-                if (strtolower($value) == strtolower($opcion))
+                if (strtolower($value) == strtolower($id))
                     $selected = "selected";
             }
-            $input .= "<option value='$opcion' $selected>$opcion</option>";
+            $input .= "<option value='$id' $selected>$opcion</option>";
         }
         $input .= "</select>";
         return $input;
@@ -151,19 +158,19 @@ class Widgets {
         $multiple = isset($parametros["multiple"]) ? ($parametros["multiple"] ? $campo.="[]" : "") : "";
         $input = "";
         $input .= $label . ":<br>";
-        foreach ($parametros["opciones"] as $opcion) {
+        foreach ($parametros["opciones"] as $id => $opcion) {
             $checked = "";
             if (is_array($value)) {
-                if (in_array($opcion, $value))
+                if (in_array($id, $value))
                     $checked = "checked";
             }else {
-                if (strtolower($value) == strtolower($opcion))
+                if (strtolower($value) == strtolower($id))
                     $checked = "checked";
             }
             if (!$multiple)
-                $input .= "<input type='radio' name='$campo' id='$campo' class='input_$campo $clase' value='$opcion' $checked>$opcion";
+                $input .= "<input type='radio' name='$campo' id='$campo' class='input_$campo $clase' value='$id' $checked>$opcion";
             else
-                $input .= "<input type='checkbox' name='$campo' id='$campo' class='input_$campo $clase' value='$opcion' $checked>$opcion";
+                $input .= "<input type='checkbox' name='$campo' id='$campo' class='input_$campo $clase' value='$id' $checked>$opcion";
         }
         return $input;
     }

@@ -5,20 +5,18 @@ class articulos extends \nucleo\Clase_base {
     
     private $id;
     private $nombre;
+    private $categoria_id;
     private $categoria;
     private $precio;
     private $cantidad;
     
-    public function __get($name) {
-        return gettype($name);
-    }
-    
-    function __construct($id=0, $nombre="", $categoria="", $precio=0, $cantidad=0) {
+    function __construct($id=0, $nombre="", $categoria_id=0, $precio=0, $cantidad=0) {
         $this->id = $id;
         $this->nombre = $nombre;
-        $this->categoria = $categoria;
+        $this->categoria_id = 0;
         $this->precio = $precio;
         $this->cantidad = $cantidad;
+        $this->categoria = new \app\modelos\categoria();
     }
     
     public function getId() {
@@ -29,10 +27,14 @@ class articulos extends \nucleo\Clase_base {
         return $this->nombre;
     }
 
+    public function getCategoria_id() {
+        return $this->categoria_id;
+    }
+
     public function getCategoria() {
         return $this->categoria;
     }
-
+    
     public function getPrecio() {
         return $this->precio;
     }
@@ -49,6 +51,10 @@ class articulos extends \nucleo\Clase_base {
         $this->nombre = $nombre;
     }
 
+    public function setCategoria_id($categoria) {
+        $this->categoria_id = $categoria;
+    }
+    
     public function setCategoria($categoria) {
         $this->categoria = $categoria;
     }
@@ -65,9 +71,9 @@ class articulos extends \nucleo\Clase_base {
         return $this->nombre;
     }
     
-    public function obtenerPorId($id, $nombreTabla = "") {
-        parent::obtenerPorId($id, $nombreTabla);
-        $this->cambiarTipoPropiedadPorObjetos("categoria", "categorias", "nombre", $this->getCategoria());
-    }
+//    public function obtenerPorId($id, $nombreTabla = "") {
+//        parent::obtenerPorId($id, $nombreTabla);
+//        $this->cambiarTipoPropiedadPorObjetos("categoria", "categorias", "nombre", $this->getCategoria());
+//    }
     
 }

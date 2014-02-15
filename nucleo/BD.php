@@ -80,6 +80,9 @@ class BD implements InterfazBD {
         foreach ($filas as $fila) {
             $this->guardarDatosDeArray($fila);
         }
+        if($nombreTabla){
+            return $this;
+        }
         if (count($filas) > 0)
             return true;
         else

@@ -10,7 +10,7 @@ class fruteria extends Controlador {
     public function listado() {
         $articulos = new \app\modelos\articulos();
         $listaArticulos = $articulos->obtenerTodo(array("order by" => "nombre"));
-        $categorias = new \app\modelos\categorias();
+        $categorias = new \app\modelos\categoria();
         $listaCategorias = $categorias->obtenerTodo();
         $this->renderizar(array("articulos" => $listaArticulos, "categorias" => $listaCategorias));
     }
@@ -88,7 +88,7 @@ class fruteria extends Controlador {
     }
 
     public function anadirCategoria_validar($request) {
-        $categoria = new \app\modelos\categorias();
+        $categoria = new \app\modelos\categoria();
         $form = new \app\modelos\form_categorias($categoria);
         $form->procesarFormulario($request, $categoria);
         if ($form->esValido()) {

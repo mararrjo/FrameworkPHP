@@ -38,21 +38,38 @@ class Clase_base extends \nucleo\BD {
     }
 
     public function obtenerStringCampos() {
+        //Extraigo las columnas que tiene la tabla en la base de datos
+        $clase = get_class($this);
+        $clase = str_getcsv($clase, "\\")[2];
+        $filas = $this->select("desc " . $clase);
+        $camposTabla = array();
+        foreach ($filas as $fila) {
+            $camposTabla[$fila->Field] = $fila->Field . " ";
+        }
+
+        //Extraigo todos los metodos de la clase. Pero quedandome solo con los
+        // que empiezan con get.
         $metodos = get_class_methods(get_class($this));
         $campos = "";
         foreach ($metodos as $indice => $metodo) {
             if (stristr($metodo, "get")) {
-                $valor = $this->$metodo();
-                if (is_array($valor)) {
-                    $valor = serialize($valor);
+                //Si el nombre de la propiedad del metodo get coincide con el
+                // de la columna de la base de datos lo añado al string.
+                $propiedad = strtolower(str_replace("get", "", $metodo));
+                if (array_key_exists($propiedad, $camposTabla)) {
+                    $valor = $this->$metodo();
+                    if (is_array($valor)) {
+                        $valor = serialize($valor);
+                    }
+                    if (!is_numeric($valor)) {
+                        $valor = "'$valor'";
+                    }
+                    $campos .= strtolower(str_replace("get", "", $metodo)) . " = " . $valor . ", ";
                 }
-                if (!is_numeric($valor)) {
-                    $valor = "'$valor'";
-                }
-                $campos .= strtolower(str_replace("get", "", $metodo)) . " = " . $valor . ", ";
             }
         }
         $campos = substr($campos, 0, count($campos) - 3);
+        ;
         return $campos;
     }
 
@@ -67,6 +84,17 @@ class Clase_base extends \nucleo\BD {
             $campo = strtoupper(substr($campo, 0, 1)) . substr($campo, 1);
             $metodo = "get" . $campo;
             $es_array = $this->$metodo();
+            if (stristr($campo, "_id") or stristr($campo,"id_")) {
+                $cosa = strtolower(str_replace("_id", "", $campo));
+                $clase = "\\app\\modelos\\".$cosa;
+                $objeto = new $clase();
+                $objeto->obtenerPorId($valor);
+                $cosaMetodo = strtoupper(substr($cosa, 0, 1)) . substr($cosa, 1);
+                $metodoCosa = "set" . $cosaMetodo;
+                if (method_exists($this, $metodoCosa)) {
+                    $this->$metodoCosa($objeto);
+                }
+            }
             if (is_array($es_array) and !is_array($valor)) {
                 $valor = unserialize($valor);
             }

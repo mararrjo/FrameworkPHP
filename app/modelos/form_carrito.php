@@ -11,7 +11,7 @@ class form_carrito extends \nucleo\Formularios {
                 "type"=>"seleccion",
                 "multiple"=>true,
                 "expandido"=>true,
-                "opciones"=>"articulos",),
+                "opciones"=>"articulos"),
             "Aceptar"=>"submit"
         ));
         

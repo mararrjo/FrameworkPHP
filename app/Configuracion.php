@@ -7,7 +7,7 @@ class Configuracion {
     public static $controlador_defecto = "fruteria";
     public static $metodo_defecto = "listado";
     
-    public static $dataBase = "fruteria";
+    public static $dataBase = "fruteria2";
     public static $server = "localhost";
     public static $port = "3306";
     public static $user = "root";
