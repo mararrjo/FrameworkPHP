@@ -12,6 +12,7 @@ class fruteria extends Controlador {
         $listaArticulos = $articulos->obtenerTodo(array("order by" => "nombre"));
         $categorias = new \app\modelos\categoria();
         $listaCategorias = $categorias->obtenerTodo();
+        \nucleo\Sesion::setDatos("articulos", array("1","2"));
         $this->renderizar(array("articulos" => $listaArticulos, "categorias" => $listaCategorias));
     }
 

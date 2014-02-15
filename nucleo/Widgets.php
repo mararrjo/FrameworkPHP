@@ -128,6 +128,13 @@ class Widgets {
         foreach ($parametros["opciones"] as $id => $opcion) {
             $selected = "";
             if (is_array($value)){
+                if(is_object(array_pop($value))){
+                    $cosas = array();
+                    foreach($value as $id => $obj){
+                        $cosas[$id] = $obj->getId();
+                    }
+                    $value = $cosas;
+                }
                 if (in_array($id, $value)){
                     $selected = "selected";
                 }
@@ -161,6 +168,13 @@ class Widgets {
         foreach ($parametros["opciones"] as $id => $opcion) {
             $checked = "";
             if (is_array($value)) {
+                if(is_object(array_values($value)[0])){
+                    $cosas = array();
+                    foreach($value as $id => $obj){
+                        $cosas[$id] = $id;
+                    }
+                    $value = $cosas;
+                }
                 if (in_array($id, $value))
                     $checked = "checked";
             }else {

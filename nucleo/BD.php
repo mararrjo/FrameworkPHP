@@ -16,6 +16,7 @@ class BD implements InterfazBD {
         if ($conexion = $this->conectar()) {
             $resultado = mysqli_query($conexion, $query);
             $this->desconectar($conexion);
+            echo "Consulta: ".$query."<br>";
             return $resultado;
         } else {
             throw new \Exception("Error al conectar con la base de datos");
@@ -37,7 +38,7 @@ class BD implements InterfazBD {
             }
 
             $this->desconectar($c);
-
+            echo "Select: ".$query."<br>";
             return $filas;
         } else {
             throw new \Exception("Error al conectar con la base de datos");
@@ -113,6 +114,7 @@ class BD implements InterfazBD {
 //                array_push($lista,$nuevo);
             }
             $this->desconectar($conexion);
+            echo "Por columnas: select * from " . $tabla . " where $nombreColumna = '$v'<br>";
             return $lista;
         } elseif (!is_numeric($valor)) {
             $campos .= $nombreColumna . " = '$valor'";
@@ -132,7 +134,6 @@ class BD implements InterfazBD {
             }
             array_push($lista, $nuevo);
         }
-
         return $lista[0];
     }
 

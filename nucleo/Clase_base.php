@@ -81,6 +81,7 @@ class Clase_base extends \nucleo\BD {
      */
     public function guardarDatosDeArray($datos) {
         foreach ($datos as $campo => $valor) {
+            //Pongo en mayusculas la primera letra del nombre de la columna.
             $campo = strtoupper(substr($campo, 0, 1)) . substr($campo, 1);
             $metodo = "get" . $campo;
             $es_array = $this->$metodo();

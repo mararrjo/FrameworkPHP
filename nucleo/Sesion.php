@@ -40,4 +40,16 @@ class Sesion {
         }
     }
     
+    public static function setDatos($lugar,$datos){
+        $_SESSION[$lugar] = $datos;
+    }
+    
+    public static function getDatos($lugar){
+        if(isset($_SESSION[$lugar])){
+            return $_SESSION[$lugar];
+        }else{
+            return null;
+        }
+    }
+    
 }
