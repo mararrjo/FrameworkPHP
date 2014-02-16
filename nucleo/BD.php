@@ -28,6 +28,7 @@ class BD implements InterfazBD {
             $namespace_tabla = get_class($this);
             $t = str_getcsv($namespace_tabla, "\\");
             $tabla = $t[count($t) - 1];
+            
             if ($query == null) {
                 $query = "select * from " . $tabla;
             }
@@ -45,28 +46,32 @@ class BD implements InterfazBD {
         }
     }
 
-    public function obtenerTodo(array $clausulas = array(), $nombreTabla = "") {
+    public function obtenerTodo(array $clausulas = array(), $nombreTabla = "",$leerBD=false) {
         if (!$nombreTabla) {
             $namespace_tabla = get_class($this);
             $tabla = str_getcsv($namespace_tabla, "\\")[2];
         } else {
             $tabla = $nombreTabla;
         }
+        if(!\app\Configuracion::$forzadoBd and !$leerBD and $datos=Sesion::getDatos($tabla)){
+            return $datos;
+        }
+     
         $string_clausulas = "";
         foreach ($clausulas as $clausula => $valor) {
             $string_clausulas .= "$clausula $valor";
         }
         $query = "select * from " . $tabla . " " . $string_clausulas;
         $filas = $this->select($query);
-        $tabla = "\\app\\modelos\\" . $tabla;
+        $tablaNamespaces = "\\app\\modelos\\" . $tabla;
 
         $lista = array();
         foreach ($filas as $fila) {
-            $nuevo = new $tabla();
+            $nuevo = new $tablaNamespaces();
             $nuevo->guardarDatosDeArray($fila);
-            array_push($lista, $nuevo);
+            $lista[$nuevo->getId()] =  $nuevo;
         }
-
+        if(!\app\Configuracion::$forzadoBd) Sesion::setDatos($tabla,$lista);
         return $lista;
     }
 
@@ -77,6 +82,16 @@ class BD implements InterfazBD {
         } else {
             $tabla = $nombreTabla;
         }
+        if(!\app\Configuracion::$forzadoBd){
+            $obj = Sesion::getDatos($tabla,$id);
+            $this->reasignarObjeto($obj);
+            if($obj){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        
         $filas = $this->select("select * from " . $tabla . " where id=" . $id);
         foreach ($filas as $fila) {
             $this->guardarDatosDeArray($fila);
@@ -136,6 +151,26 @@ class BD implements InterfazBD {
         }
         return $lista[0];
     }
+    
+    public function actualizar($nombreTabla=""){
+        if(!$nombreTabla){
+        $namespace_tabla = get_class($this);
+        $tabla = str_getcsv($namespace_tabla, "\\")[2];
+        }else{
+            $tabla = $nombreTabla;
+        }
+        $query = "select * from " . $tabla;
+        $filas = $this->select($query);
+        $tablaNamespaces = "\\app\\modelos\\" . $tabla;
+
+        $lista = array();
+        foreach ($filas as $fila) {
+            $nuevo = new $tablaNamespaces();
+            $nuevo->guardarDatosDeArray($fila);
+            $lista[$nuevo->getId()] =  $nuevo;
+        }
+        Sesion::setDatos($tabla, $lista);
+    }
 
     public function insert($objeto = null) {
         if ($objeto) {
@@ -147,7 +182,9 @@ class BD implements InterfazBD {
             $objeto = $this;
         }
         $query = "insert into " . $nombre . " set " . $objeto->obtenerStringCampos() . ";";
-        return $this->consulta($query);
+        $resulado = $this->consulta($query);
+        if(!\app\Configuracion::$forzadoBd) $this->actualizar();
+        return $resulado;
     }
 
     public function update($objeto = null) {
@@ -161,7 +198,9 @@ class BD implements InterfazBD {
         }
         $query = "update " . $nombre . " set " . $objeto->obtenerStringCampos()
                 . " where id = {$objeto->getId()};";
-        return $this->consulta($query);
+        $resultado = $this->consulta($query);
+        if(!\app\Configuracion::$forzadoBd) $this->actualizar();
+        return $resultado;
     }
 
     public function delete($objeto = null) {
@@ -174,7 +213,9 @@ class BD implements InterfazBD {
             $objeto = $this;
         }
         $query = "delete from " . $nombre . " where id = {$objeto->getId()};";
-        return $this->consulta($query);
+        $resultado = $this->consulta($query);
+        if(!\app\Configuracion::$forzadoBd) $this->actualizar();
+        return $resultado;
     }
 
     public function existe() {

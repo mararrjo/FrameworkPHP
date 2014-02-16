@@ -60,10 +60,4 @@ class carrito extends \nucleo\Clase_base {
         return $lista;
     }
 
-//    public function obtenerTodo(array $clausulas=array(),$nombreTabla = "") {
-//        $existe = parent::obtenerTodo();
-//        var_dump($this);
-//        $this->cambiarTipoPropiedadPorObjetos("articulos", "articulos", "id", $this->getArticulos());
-//        return $existe;
-//    }
 }

@@ -127,4 +127,8 @@ class Clase_base extends \nucleo\BD {
         $this->$metodo($objetos);
     }
 
+    public function reasignarObjeto($obj){
+        $this->guardarDatosDeArray($obj->obtenerArrayCampos());
+    }
+    
 }
