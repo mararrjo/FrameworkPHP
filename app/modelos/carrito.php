@@ -50,7 +50,7 @@ class carrito extends \nucleo\Clase_base {
         return $existe;
     }
 
-    public function obtenerTodo(array $clausulas = array(), $nombreTabla = "") {
+    public function obtenerTodo(array $clausulas = array(), $nombreTabla = "",$leerBD=false) {
         $cosas = parent::obtenerTodo($clausulas, $nombreTabla);
         $lista = array();
         foreach ($cosas as $cosa) {
